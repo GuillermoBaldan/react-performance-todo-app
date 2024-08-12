@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 import AddTaskForm from './components/AddTaskForm';
 import TaskList from './components/TaskList';
 import Progress from './components/Progress';
+import PerformanceChart from './components/PerformanceChart'; // Importa el nuevo componente
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -106,6 +107,7 @@ function App() {
       <AddTaskForm addTask={addTask} />
       <TaskList tasks={tasks} toggleTaskCompleted={toggleTaskCompleted} editTask={editTask} />
       <Progress percentage={completionPercentage} />
+      <PerformanceChart /> {/* Incluir el gráfico de rendimiento */}
     </div>
   );
 }
