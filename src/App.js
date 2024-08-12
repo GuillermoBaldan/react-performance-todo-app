@@ -5,30 +5,70 @@ import TaskList from './components/TaskList';
 import Progress from './components/Progress';
 
 function App() {
-
-// Definir la función globalmente en el window object
-window.deleteAllCookies = function() {
-  const cookies = document.cookie.split(";");
-
-  cookies.forEach((cookie) => {
-    const cookieName = cookie.split("=")[0].trim();
-    document.cookie = cookieName + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-  });
-
-  console.log("All cookies from this app have been deleted.");
-};
-
-  
   const [tasks, setTasks] = useState([]);
-  const currentDate = new Date().toISOString().split('T')[0]; // Fecha actual en formato YYYY-MM-DD
+  const [mockDate, setMockDate] = useState(null);
+
+  // Definir la función global para borrar todas las cookies
+  window.deleteAllCookies = function() {
+    const cookies = document.cookie.split(";");
+
+    cookies.forEach((cookie) => {
+      const cookieName = cookie.split("=")[0].trim();
+      document.cookie = cookieName + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    });
+
+    console.log("All cookies from this app have been deleted.");
+  };
+
+  // Función global para controlar la fecha de la aplicación
+  window.appClock = function (useRealTime, fakeDate) {
+    if (useRealTime) {
+      setMockDate(null); // Usar la fecha real del sistema
+      console.log("Using real system time.");
+    } else {
+      setMockDate(fakeDate); // Usar la fecha falsa proporcionada
+      console.log("Using fake date: " + fakeDate);
+    }
+  };
+
+  // Función global para borrar la cookie de una fecha específica
+  window.deleteCookieDate = function(date) {
+    Cookies.remove(date, { path: '/' });
+    console.log(`Cookie for date ${date} has been deleted.`);
+  };
+
+  // Obtener la fecha actual, ya sea real o simulada
+  const getCurrentDate = () => {
+    return mockDate || new Date().toISOString().split('T')[0];
+  };
+
+  const currentDate = getCurrentDate();
 
   useEffect(() => {
     // Cargar las tareas del día actual desde las cookies
     const savedTasks = Cookies.get(currentDate);
     if (savedTasks) {
       setTasks(JSON.parse(savedTasks));
+    } else {
+      // No hay tareas para el día actual, buscar el último día registrado
+      loadTasksFromLastRegisteredDay();
     }
   }, [currentDate]);
+
+  const loadTasksFromLastRegisteredDay = () => {
+    const allCookies = Cookies.get(); // Obtiene todas las cookies
+    const dates = Object.keys(allCookies)
+      .filter(date => /^\d{4}-\d{2}-\d{2}$/.test(date)) // Filtra las cookies que son fechas en formato YYYY-MM-DD
+      .sort((a, b) => new Date(b) - new Date(a)); // Ordena las fechas de más reciente a más antigua
+
+    if (dates.length > 0) {
+      const lastTasks = JSON.parse(Cookies.get(dates[0]));
+      // Marcar todas las tareas como no completadas
+      const newTasks = lastTasks.map(task => ({ ...task, completed: false }));
+      setTasks(newTasks);
+      saveTasksToCookie(newTasks); // Guardar las tareas como las del día actual
+    }
+  };
 
   const saveTasksToCookie = (tasksToSave) => {
     Cookies.set(currentDate, JSON.stringify(tasksToSave), { expires: 365 });
