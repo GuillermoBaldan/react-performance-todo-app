@@ -1,26 +1,44 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Cookies from 'js-cookie';
 import AddTaskForm from './components/AddTaskForm';
 import TaskList from './components/TaskList';
 import Progress from './components/Progress';
 
 function App() {
   const [tasks, setTasks] = useState([]);
+  const currentDate = new Date().toISOString().split('T')[0]; // Fecha actual en formato YYYY-MM-DD
+
+  useEffect(() => {
+    // Cargar las tareas del día actual desde las cookies
+    const savedTasks = Cookies.get(currentDate);
+    if (savedTasks) {
+      setTasks(JSON.parse(savedTasks));
+    }
+  }, [currentDate]);
+
+  const saveTasksToCookie = (tasksToSave) => {
+    Cookies.set(currentDate, JSON.stringify(tasksToSave), { expires: 365 });
+  };
 
   const addTask = (text, importance) => {
     const newTask = { text, importance, completed: false };
-    setTasks([...tasks, newTask]);
+    const updatedTasks = [...tasks, newTask];
+    setTasks(updatedTasks);
+    saveTasksToCookie(updatedTasks);
   };
 
   const toggleTaskCompleted = (index) => {
     const updatedTasks = [...tasks];
     updatedTasks[index].completed = !updatedTasks[index].completed;
     setTasks(updatedTasks);
+    saveTasksToCookie(updatedTasks);
   };
 
   const editTask = (index, updatedTask) => {
     const updatedTasks = [...tasks];
     updatedTasks[index] = updatedTask;
     setTasks(updatedTasks);
+    saveTasksToCookie(updatedTasks);
   };
 
   const totalImportance = tasks.reduce((total, task) => total + task.importance, 0);
