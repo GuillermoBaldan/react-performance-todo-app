@@ -5,6 +5,20 @@ import TaskList from './components/TaskList';
 import Progress from './components/Progress';
 
 function App() {
+
+// Definir la función globalmente en el window object
+window.deleteAllCookies = function() {
+  const cookies = document.cookie.split(";");
+
+  cookies.forEach((cookie) => {
+    const cookieName = cookie.split("=")[0].trim();
+    document.cookie = cookieName + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  });
+
+  console.log("All cookies from this app have been deleted.");
+};
+
+  
   const [tasks, setTasks] = useState([]);
   const currentDate = new Date().toISOString().split('T')[0]; // Fecha actual en formato YYYY-MM-DD
 
