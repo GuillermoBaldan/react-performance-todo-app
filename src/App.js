@@ -4,7 +4,7 @@ import AddTaskForm from './components/AddTaskForm';
 import TaskList from './components/TaskList';
 import Progress from './components/Progress';
 import PerformanceChart from './components/PerformanceChart';
-import CookieBanner from './components/CookieBanner'; // Importa el nuevo componente
+import CookieBanner from './components/CookieBanner';
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -70,11 +70,17 @@ function App() {
     Cookies.set(currentDate, JSON.stringify(tasksToSave), { expires: 365 });
   };
 
+  // Función para ordenar las tareas de mayor a menor importancia
+  const sortTasksByImportance = (tasksToSort) => {
+    return tasksToSort.sort((a, b) => b.importance - a.importance);
+  };
+
   const addTask = (text, importance) => {
     const newTask = { text, importance, completed: false };
     const updatedTasks = [...tasks, newTask];
-    setTasks(updatedTasks);
-    saveTasksToCookie(updatedTasks);
+    const sortedTasks = sortTasksByImportance(updatedTasks); // Ordenar las tareas
+    setTasks(sortedTasks);
+    saveTasksToCookie(sortedTasks); // Guardar las tareas ordenadas en las cookies
   };
 
   const toggleTaskCompleted = (index) => {
@@ -87,8 +93,9 @@ function App() {
   const editTask = (index, updatedTask) => {
     const updatedTasks = [...tasks];
     updatedTasks[index] = updatedTask;
-    setTasks(updatedTasks);
-    saveTasksToCookie(updatedTasks);
+    const sortedTasks = sortTasksByImportance(updatedTasks); // Reordenar después de editar
+    setTasks(sortedTasks);
+    saveTasksToCookie(sortedTasks);
   };
 
   const totalImportance = tasks.reduce((total, task) => total + task.importance, 0);
@@ -103,7 +110,7 @@ function App() {
       <TaskList tasks={tasks} toggleTaskCompleted={toggleTaskCompleted} editTask={editTask} />
       <Progress percentage={completionPercentage} />
       <PerformanceChart />
-      <CookieBanner /> {/* Incluir el banner de cookies */}
+      <CookieBanner />
     </div>
   );
 }
