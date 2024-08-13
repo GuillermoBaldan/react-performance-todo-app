@@ -46,6 +46,7 @@ function App() {
   const currentDate = getCurrentDate();
 
   useEffect(() => {
+    console.log("se ha ejecutado useEffect");
     // Cargar las tareas del día actual desde las cookies
     const savedTasks = Cookies.get(currentDate);
     if (savedTasks) {
