@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/react-performance-todo-app/static/css/main.e6c13ad2.css",
+    "main.js": "/react-performance-todo-app/static/js/main.bebc37dd.js",
+    "static/js/453.3e6345f7.chunk.js": "/react-performance-todo-app/static/js/453.3e6345f7.chunk.js",
+    "index.html": "/react-performance-todo-app/index.html",
+    "main.e6c13ad2.css.map": "/react-performance-todo-app/static/css/main.e6c13ad2.css.map",
+    "main.bebc37dd.js.map": "/react-performance-todo-app/static/js/main.bebc37dd.js.map",
+    "453.3e6345f7.chunk.js.map": "/react-performance-todo-app/static/js/453.3e6345f7.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.bebc37dd.js"
+  ]
+}
