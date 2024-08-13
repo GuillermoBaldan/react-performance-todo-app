@@ -54,7 +54,7 @@ function App() {
       // No hay tareas para el día actual, buscar el último día registrado
       loadTasksFromLastRegisteredDay();
     }
-  }, [currentDate]);
+  }, [currentDate, setTasks]);
 
   const loadTasksFromLastRegisteredDay = () => {
     const allCookies = Cookies.get(); // Obtiene todas las cookies
